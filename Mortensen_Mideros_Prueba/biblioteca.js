@@ -12,11 +12,6 @@ const libros = [
   
   const librosPrestados = [];
   
-<<<<<<< Updated upstream
-  // Función para asignar libros, esta puede recibir un objeto llamado filtro con tres propiedades: titulo, autor y genero.
-=======
-  // Función para asignar listas de libros, filtrando su disponibilidad si estan o no disponibles
->>>>>>> Stashed changes
   const asignarLibros = (filtro = {}) => {
     const { titulo = "", autor = "", genero = "" } = filtro;
 
