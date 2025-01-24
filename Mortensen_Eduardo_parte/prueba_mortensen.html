@@ -9,119 +9,181 @@
   <h1>Gestión de Biblioteca Digital</h1>
   
   <h2>Buscar Libros</h2>
-  <form id="form-busqueda">
-    <label for="titulo">Título:</label>
-    <input type="text" id="titulo" name="titulo" placeholder="Buscar por título">
+  <form id="busquedaForm" onsubmit="buscarLibros(event)">
+    <label for="tituloInput">Título:</label>
+    <input type="text" id="tituloInput" placeholder="Buscar por título">
 
-    <label for="autor">Autor:</label>
-    <input type="text" id="autor" name="autor" placeholder="Buscar por autor">
+    <label for="autorInput">Autor:</label>
+    <input type="text" id="autorInput" placeholder="Buscar por autor">
 
-    <label for="genero">Género:</label>
-    <input type="text" id="genero" name="genero" placeholder="Buscar por género">
+    <label for="generoInput">Género:</label>
+    <input type="text" id="generoInput" placeholder="Buscar por género">
 
     <button type="submit">Buscar</button>
   </form>
 
   <h2>Libros Disponibles</h2>
-  <ul id="libros-disponibles"></ul>
+  <ul id="librosLista"></ul>
 
   <h2>Libros Prestados</h2>
-  <ul id="libros-prestados"></ul>
+  <ul id="prestadosLista"></ul>
 
-  <button id="ver-prestados">Ver lista de libros prestados en la consola</button>
+  <button onclick="mostrarPrestados()">Ver lista de libros prestados en la consola</button>
 
   <script>
-    // Base de datos de libros
-    const libros = [
-      { id: 1, titulo: "El Quijote", autor: "Cervantes", genero: "Ficción", disponible: true },
-      { id: 2, titulo: "1984", autor: "George Orwell", genero: "Distopía", disponible: true },
-      { id: 3, titulo: "Cien Años de Soledad", autor: "Gabriel García Márquez", genero: "Realismo Mágico", disponible: true },
-      { id: 4, titulo: "El Principito", autor: "Antoine de Saint-Exupéry", genero: "Infantil", disponible: true },
-    ];
-    const librosPrestados = [];
+    // Clase Libro
+    class Libro {
+      constructor(id, titulo, autor, genero, disponible = true) {
+        this.id = id;
+        this.titulo = titulo;
+        this.autor = autor;
+        this.genero = genero;
+        this.disponible = disponible;
+      }
 
-    // Función para renderizar listas de libros
-    const renderizarLibros = (filtro = {}) => {
-      const { titulo = "", autor = "", genero = "" } = filtro;
-      const disponiblesContainer = document.getElementById("libros-disponibles");
-      const prestadosContainer = document.getElementById("libros-prestados");
+      // Método para obtener información del libro
+      get info() {
+        return `${this.titulo} - ${this.autor} (${this.genero})`;
+      }
 
-      disponiblesContainer.innerHTML = libros
-        .filter(libro => libro.disponible &&
+      // Método para reservar un libro
+      reservar() {
+        if (!this.disponible) {
+          alert("Este libro no está disponible.");
+          return false;
+        }
+        this.disponible = false;
+        return true;
+      }
+
+      // Método para devolver un libro
+      devolver() {
+        this.disponible = true;
+      }
+    }
+
+    // Clase Biblioteca
+    class Biblioteca {
+      constructor() {
+        this.libros = [];
+        this.prestados = [];
+      }
+
+      // Agregar libros a la biblioteca
+      agregarLibro(libro) {
+        this.libros.push(libro);
+      }
+
+      // Buscar libros con un filtro
+      buscarLibros(filtro = {}) {
+        const { titulo = "", autor = "", genero = "" } = filtro;
+        return this.libros.filter(libro => 
+          libro.disponible &&
           libro.titulo.toLowerCase().includes(titulo.toLowerCase()) &&
           libro.autor.toLowerCase().includes(autor.toLowerCase()) &&
           libro.genero.toLowerCase().includes(genero.toLowerCase())
-        )
-        .map(libro => `
-          <li>
-            ${libro.titulo} - ${libro.autor}
-            <button onclick="reservarLibro(${libro.id})">Reservar</button>
-          </li>
-        `)
-        .join("");
+        );
+      }
 
-      prestadosContainer.innerHTML = librosPrestados
-        .map(libro => `
-          <li>
-            ${libro.titulo} - ${libro.autor}
-            <button onclick="devolverLibro(${libro.id})">Devolver</button>
-          </li>
-        `)
-        .join("");
-    };
+      // Reservar un libro
+      reservarLibro(id) {
+        const libro = this.libros.find(libro => libro.id === id && libro.disponible);
+        if (libro && libro.reservar()) {
+          this.prestados.push(libro);
+          return libro;
+        }
+        return null;
+      }
+
+      // Devolver un libro
+      devolverLibro(id) {
+        const index = this.prestados.findIndex(libro => libro.id === id);
+        if (index !== -1) {
+          const libro = this.prestados.splice(index, 1)[0];
+          libro.devolver();
+          return libro;
+        }
+        return null;
+      }
+    }
+
+    // Crear instancia de la biblioteca
+    const biblioteca = new Biblioteca();
+
+    // Agregar libros a la biblioteca
+    biblioteca.agregarLibro(new Libro(1, "El Quijote", "Cervantes", "Ficción"));
+    biblioteca.agregarLibro(new Libro(2, "1984", "George Orwell", "Distopía"));
+    biblioteca.agregarLibro(new Libro(3, "Cien Años de Soledad", "Gabriel García Márquez", "Realismo Mágico"));
+    biblioteca.agregarLibro(new Libro(4, "El Principito", "Antoine de Saint-Exupéry", "Infantil"));
+
+    // Renderizar listas de libros
+    function renderizarLibros(filtro = {}) {
+      const disponiblesLista = document.getElementById("librosLista");
+      const prestadosLista = document.getElementById("prestadosLista");
+
+      // Libros disponibles
+      const librosDisponibles = biblioteca.buscarLibros(filtro);
+      disponiblesLista.innerHTML = librosDisponibles.map(libro => `
+        <li>
+          ${libro.info}
+          <button onclick="reservar(${libro.id})">Reservar</button>
+        </li>
+      `).join("");
+
+      // Libros prestados
+      prestadosLista.innerHTML = biblioteca.prestados.map(libro => `
+        <li>
+          ${libro.info}
+          <button onclick="devolver(${libro.id})">Devolver</button>
+        </li>
+      `).join("");
+    }
 
     // Función para reservar un libro
-    const reservarLibro = (libroId) => {
-      const libro = libros.find(libro => libro.id === libroId && libro.disponible);
-      if (!libro) {
-        alert("Este libro no está disponible.");
-        return;
+    function reservar(id) {
+      const libro = biblioteca.reservarLibro(id);
+      if (libro) {
+        alert(`Has reservado el libro: "${libro.titulo}"`);
+        renderizarLibros();
       }
-      libro.disponible = false;
-      librosPrestados.push(libro);
-      renderizarLibros();
-      alert(`Has reservado el libro: "${libro.titulo}"`);
-    };
+    }
 
     // Función para devolver un libro
-    const devolverLibro = (libroId) => {
-      const libroIndex = librosPrestados.findIndex(libro => libro.id === libroId);
-      if (libroIndex === -1) {
-        alert("Este libro no está prestado.");
-        return;
+    function devolver(id) {
+      const libro = biblioteca.devolverLibro(id);
+      if (libro) {
+        alert(`Has devuelto el libro: "${libro.titulo}"`);
+        renderizarLibros();
       }
-      const libro = librosPrestados.splice(libroIndex, 1)[0];
-      libro.disponible = true;
-      renderizarLibros();
-      alert(`Has devuelto el libro: "${libro.titulo}"`);
-    };
+    }
 
-    // Manejar el envío del formulario de búsqueda
-    document.getElementById("form-busqueda").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const titulo = document.getElementById("titulo").value;
-      const autor = document.getElementById("autor").value;
-      const genero = document.getElementById("genero").value;
+    // Función para manejar la búsqueda
+    function buscarLibros(event) {
+      event.preventDefault();
+      const titulo = document.getElementById("tituloInput").value;
+      const autor = document.getElementById("autorInput").value;
+      const genero = document.getElementById("generoInput").value;
       renderizarLibros({ titulo, autor, genero });
-    });
+    }
 
-    // Mostrar la lista de libros prestados en la consola
-    document.getElementById("ver-prestados").addEventListener("click", () => {
-      if (librosPrestados.length === 0) {
+    // Mostrar libros prestados en la consola
+    function mostrarPrestados() {
+      if (biblioteca.prestados.length === 0) {
         console.log("No hay libros prestados.");
         alert("No hay libros prestados.");
       } else {
         console.log("Lista de libros prestados:");
-        librosPrestados.forEach(libro => {
+        biblioteca.prestados.forEach(libro => {
           console.log(`Título: ${libro.titulo}, Autor: ${libro.autor}, Género: ${libro.genero}`);
         });
         alert("La lista de libros prestados se ha mostrado en la consola.");
       }
-    });
+    }
 
     // Inicializar la aplicación
     renderizarLibros();
   </script>
 </body>
 </html>
+
 
