@@ -31,17 +31,21 @@
   <button id="ver-prestados">Ver lista de libros prestados en la consola</button>
 
   <script>
-    // Base de datos de libros
+    // Array de libros
     const libros = [
-      { id: 1, titulo: "El Quijote", autor: "Cervantes", genero: "Ficción", disponible: true },
-      { id: 2, titulo: "1984", autor: "George Orwell", genero: "Distopía", disponible: true },
-      { id: 3, titulo: "Cien Años de Soledad", autor: "Gabriel García Márquez", genero: "Realismo Mágico", disponible: true },
-      { id: 4, titulo: "El Principito", autor: "Antoine de Saint-Exupéry", genero: "Infantil", disponible: true },
-    ];
+    { id: 1, titulo: "La casa", autor: "Carlos Ponce", genero: "Ficción", disponible: true },
+    { id: 2, titulo: "1 de a lado", autor: "Maria Trevi", genero: "Distopía", disponible: true },
+    { id: 3, titulo: "Soledad", autor: "Gabriela Quispe", genero: "Realismo Mágico", disponible: false },
+    { id: 4, titulo: "Carlitis", autor: "Don Carlos", genero: "Infantil", disponible: false },
+    { id: 5, titulo: "Estructura de datos", autor: "Fernando Solis", genero: "Ciencias de la COomputación", disponible: true },
+    { id: 6, titulo: "Hebillo", autor: "Qato", genero: "Fantasía", disponible: true }
+    { id: 7, titulo: "La hoguera", autor: "Eduardo Mortensen", genero: "Suspenso", disponible: false },
+    { id: 8, titulo: "La Metamorfosis", autor: "Franz Kafka", genero: "Drama Psicológico", disponible: true },
+];
     const librosPrestados = [];
 
-    // Función para renderizar listas de libros
-    const renderizarLibros = (filtro = {}) => {
+    // Función para asignar listas de libros
+    const asignarLibros = (filtro = {}) => {
     const { titulo = "", autor = "", genero = "" } = filtro;
     const disponiblesContainer = document.getElementById("libros-disponibles");
     const prestadosContainer = document.getElementById("libros-prestados");
@@ -79,7 +83,7 @@
       }
       libro.disponible = false;
       librosPrestados.push(libro);
-      renderizarLibros();
+      asignarLibros();
       alert(`Has reservado el libro: "${libro.titulo}"`);
     };
 
@@ -92,7 +96,7 @@
       }
       const libro = librosPrestados.splice(libroIndex, 1)[0];
       libro.disponible = true;
-      renderizarLibros();
+      asignarLibros();
       alert(`Has devuelto el libro: "${libro.titulo}"`);
     };
 
@@ -102,7 +106,7 @@
       const titulo = document.getElementById("titulo").value;
       const autor = document.getElementById("autor").value;
       const genero = document.getElementById("genero").value;
-      renderizarLibros({ titulo, autor, genero });
+      asignarLibros({ titulo, autor, genero });
     });
 
     // Mostrar la lista de libros prestados en la consola
@@ -120,7 +124,7 @@
     });
 
     // Inicializar la aplicación
-    renderizarLibros();
+    asignarLibros();
   </script>
 </body>
 </html>
