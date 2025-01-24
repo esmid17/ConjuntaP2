@@ -1,4 +1,4 @@
-// Array de libros
+// Como primera instancia, se crea un array de libros, en el cual, cada libro posee ciertas propiedades
 const libros = [
     { id: 1, titulo: "La casa", autor: "Carlos Ponce", genero: "Ficción", disponible: true },
     { id: 2, titulo: "1 de a lado", autor: "Maria Trevi", genero: "Distopía", disponible: true },
@@ -12,7 +12,7 @@ const libros = [
   
   const librosPrestados = [];
   
-  // Función para asignar listas de libros
+  // Función para asignar libros, esta puede recibir un objeto llamado filtro con tres propiedades: titulo, autor y genero.
   const asignarLibros = (filtro = {}) => {
     const { titulo = "", autor = "", genero = "" } = filtro;
     const disponiblesContainer = document.getElementById("libros-disponibles");
