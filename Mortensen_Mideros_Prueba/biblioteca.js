@@ -12,7 +12,11 @@ const libros = [
   
   const librosPrestados = [];
   
+<<<<<<< Updated upstream
   // Función para asignar libros, esta puede recibir un objeto llamado filtro con tres propiedades: titulo, autor y genero.
+=======
+  // Función para asignar listas de libros, filtrando su disponibilidad si estan o no disponibles
+>>>>>>> Stashed changes
   const asignarLibros = (filtro = {}) => {
     const { titulo = "", autor = "", genero = "" } = filtro;
 
@@ -46,7 +50,7 @@ const libros = [
       .join("");
   };
   
-  // Función para reservar un libro
+  // Función para reservar un libro, RESERVA EL LIBRO Y LANZA UNA ALERTA SI EL LIBRO NO ESTA DISPONIBLE SINO PASA RESERVAR EL LIBRO, VALIDAMOS CON BOOLEANOS Y FUNCIONES FLECHA
   const reservarLibro = (libroId) => {
     const libro = libros.find(libro => libro.id === libroId && libro.disponible);
     if (!libro) {
@@ -59,7 +63,7 @@ const libros = [
     alert(`Has reservado el libro: "${libro.titulo}"`);
   };
   
-  // Función para devolver un libro
+// Función para DEVOLVER un libro,DEVOLVER EL LIBRO Y LANZA UNA ALERTA SI EL LIBRO NO ESTA DISPONIBLE SINO PASA RESERVAR EL LIBRO, VALIDAMOS CON BOOLEANOS Y FUNCIONES FLECHA USANDO SPLICE
   const devolverLibro = (libroId) => {
     const libroIndex = librosPrestados.findIndex(libro => libro.id === libroId);
     if (libroIndex === -1) {
