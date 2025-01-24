@@ -15,10 +15,14 @@ const libros = [
   // Función para asignar libros, esta puede recibir un objeto llamado filtro con tres propiedades: titulo, autor y genero.
   const asignarLibros = (filtro = {}) => {
     const { titulo = "", autor = "", genero = "" } = filtro;
+
+    // Se crean 2 variables tipo const que funcionan como contenedores para almacenar elementos
     const disponiblesContainer = document.getElementById("libros-disponibles");
     const prestadosContainer = document.getElementById("libros-prestados");
-  
+    
     disponiblesContainer.innerHTML = libros
+        //Se utiliza el metodo filter para identificar los libros que se encuentren disponibles y posteriormente
+        //añadirlo a la lista
       .filter(libro => libro.disponible &&
         libro.titulo.toLowerCase().includes(titulo.toLowerCase()) &&
         libro.autor.toLowerCase().includes(autor.toLowerCase()) &&
@@ -91,6 +95,6 @@ const libros = [
     }
   });
   
-  // Inicializar la aplicación
+  // Se llama a la funcion para ejecutar el programa
   asignarLibros();
   
