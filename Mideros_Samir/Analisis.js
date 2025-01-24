@@ -42,8 +42,6 @@ function buscarLibros(criterio, valor) {
     return librosDisponibles.filter(libro => libro[criterio].toLowerCase().includes(valor.toLowerCase()));
 }
 
-
-
 /* 2. Filtrado y búsquedas dinámicas: ¿Cómo implementar filtros (filter) y búsqueda de libros por título,
 autor o género? */
 
