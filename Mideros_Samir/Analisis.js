@@ -19,6 +19,30 @@ let librosDisponibles = [
 
 let librosPrestados = [];
 
+/* Para las siguientes funciones se utilizaron los metodos: find, push y filter, ya que están diseñadas para 
+cuando se necesita iterar sobre multiples objetos y es necesario que se devuelva uno o mas elementos del array */
+
+function reservarLibro(idUsuario, idLibro) {
+    let libro = librosDisponibles.find(libro => libro.id === idLibro);
+    if (libro) {
+        librosPrestados.push({ ...libro, idUsuario, fechaPrestamo: new Date() });
+        librosDisponibles.splice(librosDisponibles.indexOf(libro), 1);
+    }
+}
+
+function devolverLibro(idLibro) {
+    let libro = librosPrestados.find(libro => libro.id === idLibro);
+    if (libro) {
+        librosDisponibles.push(libro);
+        librosPrestados = librosPrestados.filter(libro => libro.id !== idLibro);
+    }
+}
+
+function buscarLibros(criterio, valor) {
+    return librosDisponibles.filter(libro => libro[criterio].toLowerCase().includes(valor.toLowerCase()));
+}
+
+
 
 /* 2. Filtrado y búsquedas dinámicas: ¿Cómo implementar filtros (filter) y búsqueda de libros por título,
 autor o género? */
